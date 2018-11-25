@@ -101,9 +101,7 @@ class Actor(object):
         self.t_replace_counter += 1
 
     def choose_action(self, s):
-        print (s)
         s = s[np.newaxis, :]    # single state
-        print (s)
         return self.sess.run(self.a, feed_dict={S: s})[0]  # single action
 
     def add_grad_to_graph(self, a_grads):
@@ -204,8 +202,7 @@ actor.add_grad_to_graph(critic.a_grads)
 M = Memory(MEMORY_CAPACITY, dims=2 * STATE_DIM + ACTION_DIM + 1)
 
 saver = tf.train.Saver()
-path = './'
-# +MODE[n_model]
+path = './'+MODE[n_model]
 
 if LOAD:
     saver.restore(sess, tf.train.latest_checkpoint(path))

@@ -4,7 +4,7 @@ class Car(object):
 
     action_bound = [-5, 5]
     action_dim = 2
-    state_dim = (3,10)
+    state_dim = 30
     dt = 0.1
 
     def __init__(self):
@@ -20,6 +20,8 @@ class Car(object):
 
 
     def step(self, state, action):
+
+        state = state.reshape((3,10))
 
         ego_cs = state[0]
         other_cs = state[1]
@@ -60,6 +62,8 @@ class Car(object):
         obstacle_ns = obstacle_cs
 
         next_state = np.array([ego_ns, other_ns, obstacle_ns])
+
+        next_state = next_state.flatten()
 
         reward, done = self.reward_function(ego_ns, other_ns, obstacle_ns)
 
@@ -114,23 +118,23 @@ class Car(object):
 
         #stays_on_road
 
-        if not (0< ego_ns[0]< 8) or (0<ego_ns[1]<50):
+        if not ((0< ego_ns[0]< 50) or (0<ego_ns[1]<8)):
             reward = reward-3
             done = True
         
         #goal-reaching 
 
-        if distance_x_goal < 1:
+        if distance_x_goal < 0.5:
             reward = reward + 5
             done  = True
         
-        if distance_y_goal < 1:
+        if distance_y_goal < 0.5:
             reward = reward +5
             done = True 
 
         #lane_changing
 
-        if (24 <= ego_ns[0] <= 26) and (4 <= ego_ns[1] <= 8):
+        if (5.5 <= ego_ns[1] <= 6.5):
             reward = reward +1                  
         
 
@@ -148,7 +152,8 @@ class Car(object):
         obstacle = np.array([25,2,0,0,0,0,6,2,0,0])
 
         init_state = np.array([ego_vehicle, other_vehicle, obstacle])
-        
+
+        init_state = init_state.flatten()
         return init_state
 
      
